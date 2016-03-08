@@ -27,7 +27,7 @@ class cassandra::repository {
 
   case $::osfamily {
     'Debian': {
-      if $::lsbdistrelease == '14.04' {
+      if $::lsbdistrelease == '12.04' {
 
         include apt
         include apt::update
