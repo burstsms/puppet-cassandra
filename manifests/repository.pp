@@ -50,6 +50,29 @@ class cassandra::repository {
         Apt::Source<| |> -> Exec<| command == 'update-cassandra-repos' |>
 
       }
+      elsif $::lsbdistrelease == '14.04' {
+
+        include apt
+        include apt::update
+
+        apt::source {'datastax':
+          location    => 'http://debian.datastax.com/community',
+          comment     => 'DataStax Repo for Apache Cassandra',
+          release     => 'stable',
+          key         => '7E41C00F85BFC1706C4FFFB3350200F2B999A372',
+          key_source  => 'http://debian.datastax.com/debian/repo_key',
+          include_src => false
+        }
+
+        # Dummy exec to wrap apt_update
+        exec {'update-cassandra-repos':
+          command => '/bin/true',
+          require => Exec['apt_update']
+        }
+
+        Apt::Source<| |> -> Exec<| command == 'update-cassandra-repos' |>
+
+      }
       else {
         fail('Operating System not supported by this module')
       }
